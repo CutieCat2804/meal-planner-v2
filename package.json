@@ -6,20 +6,40 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "update-db": "npx drizzle-kit push",
+    "generate-theme-types": "npx @chakra-ui/cli typegen ./src/theme/theme.ts"
   },
   "dependencies": {
+    "@chakra-ui/react": "^3.16.0",
+    "@libsql/client": "^0.15.4",
+    "@tanstack/react-query": "^5.74.4",
+    "@trpc/client": "^11.1.0",
+    "@trpc/next": "^11.1.0",
+    "@trpc/react-query": "^11.1.0",
+    "@trpc/server": "^11.1.0",
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.42.0",
+    "next": "15.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.1"
+    "react-icons": "^5.5.0",
+    "zod": "^3.24.3",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@eslint/js": "^9.25.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
+    "drizzle-kit": "^0.31.0",
+    "eslint": "^9.25.1",
     "eslint-config-next": "15.3.1",
-    "@eslint/eslintrc": "^3"
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.0.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5",
+    "typescript-eslint": "^8.31.0"
   }
 }
