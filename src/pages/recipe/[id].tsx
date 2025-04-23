@@ -89,9 +89,10 @@ export default function Recipe() {
                 fontSize="sm"
                 alignItems="start"
               >
-                <Text fontWeight="bold">Quelle: </Text>
                 {recipe.source.startsWith("http") ? (
-                  <Link href={recipe.source} target="_blank">{recipe.source}</Link>
+                  <Link href={recipe.source} target="_blank">
+                    Link zum Originalrezept
+                  </Link>
                 ) : (
                   <Text> {recipe.source}</Text>
                 )}
