@@ -41,7 +41,12 @@ const RecipeOptionsMenu: React.FC<RecipeOptionsMenuProps> = (props) => {
   return (
     <MenuRoot>
       <MenuTrigger asChild>
-        <IconButton variant="outline" alignSelf="end" size="sm">
+        <IconButton
+          variant="outline"
+          alignSelf="center"
+          size="sm"
+          onClick={(e) => e.stopPropagation()}
+        >
           <LuEllipsis />
         </IconButton>
       </MenuTrigger>
@@ -50,6 +55,7 @@ const RecipeOptionsMenu: React.FC<RecipeOptionsMenuProps> = (props) => {
           value="edit"
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             router.push({ pathname: "/add-recipe", query: { id } });
           }}
         >
@@ -60,7 +66,11 @@ const RecipeOptionsMenu: React.FC<RecipeOptionsMenuProps> = (props) => {
           value="delete"
           color="fg.error"
           _hover={{ bg: "bg.error", color: "fg.error" }}
-          onClick={handleDelete}
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push({ pathname: "/" });
+            handleDelete();
+          }}
         >
           <LuTrash2 />
           Löschen

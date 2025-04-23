@@ -5,6 +5,7 @@ import { create } from "zustand";
 interface StoreState {
   recipeData: Recipe;
   formErrors: FormErrors;
+  clearRecipeData: () => void;
   updateRecipeData: (recipeData: Recipe) => void;
   updateField: (field: string, value: string) => void;
   updateStep: (field: string, value: string, index: number) => void;
@@ -32,6 +33,17 @@ export const useRecipeStore = create<StoreState>((set) => ({
     source: "",
   },
   formErrors: {},
+  clearRecipeData: () =>
+    set(() => ({
+      recipeData: {
+        user: "Zoe",
+        name: "",
+        amount: "",
+        duration: "",
+        steps: [{ title: "", description: "", ingredients: [] }],
+        source: "",
+      },
+    })),
   updateRecipeData: (recipeData: Recipe) => set(() => ({ recipeData })),
   updateField: (field: string, value: string) =>
     set((state) => ({
@@ -53,11 +65,7 @@ export const useRecipeStore = create<StoreState>((set) => ({
         ...state.recipeData,
         steps: [
           ...state.recipeData.steps,
-          {
-            title: "",
-            description: "",
-            ingredients: [{ name: "", amount: "" }],
-          },
+          { title: "", description: "", ingredients: [] },
         ],
       },
     })),

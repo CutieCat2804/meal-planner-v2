@@ -17,6 +17,7 @@ export default function Home() {
       maxWidth={{ base: "100%", xl: "70vw" }}
       width="100%"
       justifySelf="center"
+      marginBottom="12"
     >
       <chakra.main width="100%">
         <Toaster />
@@ -40,7 +41,13 @@ export default function Home() {
             <Separator />
             <Flex flexWrap="wrap" justifyContent="center" gap="4">
               {recipes?.map((recipe) => (
-                <Card.Root key={recipe.id} width="300px">
+                <Card.Root
+                  key={recipe.id}
+                  width="300px"
+                  onClick={() => router.push(`/recipe/${recipe.id}`)}
+                  cursor="pointer"
+                  _hover={{ borderColor: "green.600" }}
+                >
                   <Card.Header
                     justifyContent="space-between"
                     flexDir="row"

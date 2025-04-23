@@ -8,38 +8,58 @@ import {
   Separator,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { recipeSchema } from "@/interface/Recipe";
 import { toaster, Toaster } from "@/components/ui/toaster";
 import { Field } from "@/components/ui/field";
 import StepList from "@/components/StepList";
 import { FormErrors } from "@/interface/FormErrors";
 import { useRecipeStore } from "@/store/useRecipeStore";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 
 export default function AddRecipe() {
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  const router = useRouter();
+  const id = router.query.id;
 
-  const recipe = trpc.getRecipe.useQuery({ id: Number(id) || 4 });
+  const { data: recipe } = trpc.getRecipe.useQuery({ id: Number(id) });
   const updateRecipeData = useRecipeStore((state) => state.updateRecipeData);
-  if (recipe.data) {
-    updateRecipeData(recipe.data);
-  }
+  const clearRecipeData = useRecipeStore((state) => state.clearRecipeData);
+
+  useEffect(() => {
+    if (recipe) {
+      updateRecipeData(recipe);
+    } else {
+      clearRecipeData();
+    }
+  }, [recipe]);
 
   const addRecipe = trpc.addRecipe.useMutation({
     onSuccess: () => {
       toaster.create({
-        description: `Rezept wurde ${id ? "bearbeitet" : "erstellt"}.`,
+        description: "Rezept wurde erstellt",
         type: "success",
       });
     },
     onError: (error) => {
       console.error("Error during mutation:", error);
       toaster.create({
-        description: `Beim ${
-          id ? "Bearbeiten" : "Erstellen"
-        } des Rezepts ist ein Fehler aufgetreten.`,
+        description: "Beim Erstellen des Rezepts ist ein Fehler aufgetreten.",
+        type: "error",
+      });
+    },
+  });
+
+  const updateRecipe = trpc.updateRecipe.useMutation({
+    onSuccess: () => {
+      toaster.create({
+        description: "Rezept wurde bearbeitet.",
+        type: "success",
+      });
+    },
+    onError: (error) => {
+      console.error("Error during mutation:", error);
+      toaster.create({
+        description: "Beim Bearbeiten des Rezepts ist ein Fehler aufgetreten.",
         type: "error",
       });
     },
@@ -68,8 +88,25 @@ export default function AddRecipe() {
       return;
     }
 
-    await addRecipe.mutateAsync(result.data);
+    if (id) {
+      await updateRecipe.mutateAsync({ ...result.data, id: Number(id) });
+    } else {
+      await addRecipe.mutateAsync(result.data);
+    }
+
+    router.push("/");
   };
+
+  useEffect(() => {
+    const onbeforeunload = (e: Event) => e.preventDefault();
+
+    addEventListener("beforeunload", onbeforeunload);
+    addEventListener("pagehide", onbeforeunload);
+    return () => {
+      removeEventListener("beforeunload", onbeforeunload);
+      removeEventListener("pagehide", onbeforeunload);
+    };
+  }, []);
 
   return (
     <Flex
@@ -77,6 +114,7 @@ export default function AddRecipe() {
       maxWidth={{ base: "100%", xl: "50vw" }}
       width="100%"
       justifySelf="center"
+      marginBottom="12"
     >
       <chakra.main width="100%">
         <Toaster />
@@ -84,7 +122,6 @@ export default function AddRecipe() {
           <form onSubmit={handleSubmit}>
             <Card.Body gap="6">
               <Flex flexDir={{ base: "column", lg: "row" }} gap="4">
-                {/* <Image /> */}
                 <VStack width="100%" gap="4">
                   <Field
                     label="Name"
@@ -135,9 +172,16 @@ export default function AddRecipe() {
                 />
               </Field>
             </Card.Body>
-            <Card.Footer justifyContent="center">
+            <Card.Footer
+              justifyContent="center"
+              gap="4"
+              flexDir={{ base: "column", md: "row" }}
+            >
               <Button type="submit">
                 {id ? "Änderungen speichern" : "Rezept erstellen"}
+              </Button>
+              <Button variant="outline" onClick={() => router.push("/")}>
+                {id ? "Änderungen verwerfen" : "Abbrechen"}
               </Button>
             </Card.Footer>
           </form>
