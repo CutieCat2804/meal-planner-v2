@@ -91,7 +91,7 @@ export default function Recipe() {
               >
                 <Text fontWeight="bold">Quelle: </Text>
                 {recipe.source.startsWith("http") ? (
-                  <Link href={recipe.source}>{recipe.source}</Link>
+                  <Link href={recipe.source} target="_blank">{recipe.source}</Link>
                 ) : (
                   <Text> {recipe.source}</Text>
                 )}

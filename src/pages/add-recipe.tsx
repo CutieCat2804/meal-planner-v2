@@ -90,11 +90,11 @@ export default function AddRecipe() {
 
     if (id) {
       await updateRecipe.mutateAsync({ ...result.data, id: Number(id) });
+      router.push(`/recipe/${id}`);
     } else {
       await addRecipe.mutateAsync(result.data);
+      router.push("/");
     }
-
-    router.push("/");
   };
 
   useEffect(() => {
